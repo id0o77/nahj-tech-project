@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ t.request_service }} - {{ service.name }}{% endblock %}
+{% block content %}
+<section class="contact-hero">
+  <span class="badge">{{ t.request_service }}</span>
+  <h1>{{ service.name }}</h1>
+  <p>{{ service.description }}</p>
+</section>
+<section class="section contact-grid">
+  <div class="glass-card contact-info reveal show">
+    <span class="badge">{{ service.icon }} {{ t.requested_service }}</span>
+    <h2>{{ service.name }}</h2>
+    <p class="muted">{{ service.description }}</p>
+    <div class="info-row"><b>💰</b><div><h3>{{ t.price }}</h3><p>{{ service.price }}</p></div></div>
+    <div class="info-row"><b>✅</b><div><h3>{{ t.status }}</h3><p>{{ service.status }}</p></div></div>
+  </div>
+  <form class="glass-card form-box reveal show" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>{{ t.full_name }}<input name="name" required maxlength="80" placeholder="{{ t.full_name }}"></label>
+    <div class="two">
+      <label>{{ t.email }}<input type="email" name="email" required maxlength="120" placeholder="name@example.com"></label>
+      <label>{{ t.phone }}<input name="phone" maxlength="40" placeholder="+968 ..."></label>
+    </div>
+    <label>{{ t.request_details }}<textarea name="message" required minlength="5" maxlength="2000" placeholder="اكتب تفاصيل طلبك..."></textarea></label>
+    <button type="submit">{{ t.submit_request }} 🚀</button>
+  </form>
+</section>
+{% endblock %}

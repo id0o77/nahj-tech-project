@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ t.feedback }}{% endblock %}
+{% block content %}
+<section class="contact-hero"><span class="badge">{{ t.feedback }}</span><h1>{{ t.feedback_title }}</h1><p>{{ t.feedback_desc }}</p></section>
+<section class="section feedback-grid">
+  <div class="glass-card feedback-info">
+    <h2>{{ t.reviews }}</h2>
+    <p>{{ t.feedback_desc }}</p>
+    <div class="feedback-points">
+      <span>★ ★ ★ ★ ★</span>
+      <span>{{ t.satisfied }} / {{ t.neutral }} / {{ t.not_satisfied }}</span>
+      <span>{{ t.suggestions }}</span>
+    </div>
+  </div>
+  <form class="glass-card form-box" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="two">
+      <label>{{ t.customer_name }}<input name="name" placeholder="{{ t.customer_name }}" required maxlength="80"></label>
+      <label>{{ t.email }}<input name="email" type="email" placeholder="{{ t.email }}" maxlength="120"></label>
+    </div>
+    <label>{{ t.service_used }}
+      <select name="service_used">
+        <option value="">{{ t.service_used }}</option>
+        {% for service in services %}<option value="{{ service.name }}">{{ service.icon }} {{ service.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <div class="two">
+      <label>{{ t.rating }}
+        <input type="hidden" name="rating" value="5">
+        <div class="rating-widget" aria-label="{{ t.rating }}">
+          <button type="button" data-value="1">★</button>
+          <button type="button" data-value="2">★</button>
+          <button type="button" data-value="3">★</button>
+          <button type="button" data-value="4">★</button>
+          <button type="button" data-value="5">★</button>
+        </div>
+      </label>
+      <label>{{ t.satisfaction }}
+        <div class="satisfaction-pills">
+          <label><input type="radio" name="satisfaction" value="satisfied" checked><span>{{ t.satisfied }}</span></label>
+          <label><input type="radio" name="satisfaction" value="neutral"><span>{{ t.neutral }}</span></label>
+          <label><input type="radio" name="satisfaction" value="not_satisfied"><span>{{ t.not_satisfied }}</span></label>
+        </div>
+      </label>
+    </div>
+    <label>{{ t.suggestion }}<textarea name="suggestion" placeholder="{{ t.suggestion }}" required maxlength="2000"></textarea></label>
+    <label class="check-row"><input type="checkbox" name="is_public" checked> {{ t.public_review }}</label>
+    <button type="submit">{{ t.submit_feedback }}</button>
+  </form>
+</section>
+{% endblock %}

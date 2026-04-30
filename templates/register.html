@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}إنشاء حساب{% endblock %}
+{% block content %}
+<section class="section form-box small">
+  <h1>إنشاء حساب</h1>
+  <form method="post">
+    <input name="username" type="text" placeholder="اسم المستخدم" required>
+    <input name="password" type="password" placeholder="كلمة المرور" required>
+    <button type="submit">تسجيل</button>
+  </form>
+</section>
+{% endblock %}

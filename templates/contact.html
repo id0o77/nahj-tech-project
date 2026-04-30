@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ t.contact }}{% endblock %}
+{% block content %}
+<section class="contact-hero"><span class="badge">{{ t.contact }}</span><h1>{{ t.contact_title }}</h1><p>{{ t.contact_desc }}</p></section>
+<section class="section contact-grid">
+  <div class="glass-card contact-info"><span>{{ t.brand }}</span><div class="info-row"><b>✉</b><div><h3>Email</h3><p>info@najh.tech</p></div></div><div class="info-row"><b>☎</b><div><h3>Phone</h3><p>+968 77444980</p></div></div><div class="info-row"><b>⌖</b><div><h3>Location</h3><p>Muscat, Oman</p></div></div></div>
+  <form class="glass-card form-box" method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><div class="two"><label>{{ t.full_name }}<input name="name" placeholder="{{ t.full_name }}" required maxlength="80"></label><label>{{ t.company }}<input name="company" placeholder="{{ t.company }}" maxlength="80"></label></div><label>{{ t.email }}<input name="email" type="email" placeholder="{{ t.email }}" required maxlength="120"></label><label>{{ t.message }}<textarea name="message" placeholder="{{ t.message }}" required maxlength="2000"></textarea></label><button type="submit">{{ t.send }}</button></form>
+</section>
+{% endblock %}
