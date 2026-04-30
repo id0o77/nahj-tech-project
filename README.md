@@ -10,7 +10,7 @@ python app.py
 افتح:
 
 ```text
-http://127.0.0.1:5000
+https://nahj-tech-project.onrender.com
 ```
 
 ## دخول لوحة التحكم
