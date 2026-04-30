@@ -6,48 +6,18 @@
     <span class="badge">{{ t.hero_badge }}</span>
     <h1>{{ t.hero_title }}</h1>
     <p>{{ t.hero_desc }}</p>
-    <div class="hero-actions">
-      <a class="btn" href="{{ url_for('services') }}">{{ t.discover }} ✨</a>
-      <a class="btn ghost" href="{{ url_for('contact') }}">{{ t.contact }}</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><strong data-counter="{{ services|length }}">0</strong><span>{{ t.services }}</span></div>
-      <div class="hero-stat"><strong data-counter="5">0</strong><span>{{ t.rating }}</span></div>
-      <div class="hero-stat"><strong>24/7</strong><span>{{ t.contact }}</span></div>
-    </div>
+    <div class="hero-actions"><a class="btn" href="{{ url_for('services') }}">{{ t.discover }}</a><a class="btn ghost" href="{{ url_for('contact') }}">{{ t.contact }}</a></div>
   </div>
 </section>
-
 <section class="section">
-  <div class="section-title">
-    <span>{{ t.services }}</span>
-    <h2>{{ t.our_services }}</h2>
-    <p>{{ t.services_desc }}</p>
-  </div>
+  <div class="section-title"><span>{{ t.services }}</span><h2>{{ t.our_services }}</h2><p>{{ t.services_desc }}</p></div>
   <div class="service-grid">
-    {% for service in services %}
-    <div class="service-wrap reveal">
-      <a class="glass-card service-tile service-card-link" href="{{ url_for('service_detail', service_id=service.id) }}" aria-label="{{ t.details }} {{ service.name }}">
-        <div class="tile-icon">{{ service.icon }}</div>
-        <h3>{{ service.name }}</h3>
-        <p>{{ service.description }}</p>
-        <span class="inline-link">{{ t.details }} ←</span>
-      </a>
-      <a class="btn request-card-btn" href="{{ url_for('request_service', service_id=service.id) }}">{{ t.request_service }} 🚀</a>
-    </div>
-    {% endfor %}
+    {% for service in services %}<article class="glass-card service-tile"><div class="tile-icon">{{ service.icon }}</div><h3>{{ service.name }}</h3><p>{{ service.description }}</p><a href="{{ url_for('service_detail', service_id=service.id) }}">{{ t.details }} ←</a></article>{% endfor %}
   </div>
 </section>
-
 <section id="about" class="section values-section">
   <div class="section-title"><span>{{ t.about }}</span><h2>{{ t.values_title }}</h2><p>{{ t.values_desc }}</p></div>
-  <div class="values-grid">{% for title, text, icon in values %}<div class="value-card reveal"><div class="value-icon">{{ icon }}</div><h3>{{ title }}</h3><p>{{ text }}</p></div>{% endfor %}</div>
+  <div class="values-grid">{% for title, text, icon in values %}<div class="value-card"><div class="value-icon">{{ icon }}</div><h3>{{ title }}</h3><p>{{ text }}</p></div>{% endfor %}</div>
 </section>
-
-<section class="section testimonials">
-  <div class="section-title"><span>{{ t.feedback }}</span><h2>{{ t.testimonial_title }}</h2><p>{{ t.feedback_desc }}</p></div>
-  <div class="review-grid">{% for review in reviews %}<article class="glass-card review-card reveal"><div class="stars">{% for i in range(review.rating) %}★{% endfor %}</div><p>“{{ review.suggestion }}”</p><strong>{{ review.name }}</strong>{% if review.service_used %}<small>{{ review.service_used }}</small>{% endif %}<span class="status {{ review.satisfaction }}">{{ t[review.satisfaction] }}</span></article>{% else %}<div class="empty-review glass-card"><p>{{ t.feedback_desc }}</p><a class="btn" href="{{ url_for('feedback') }}">{{ t.submit_feedback }}</a></div>{% endfor %}</div>
-</section>
-
 <section class="section cta"><span class="badge">{{ t.contact }}</span><h2>{{ t.cta_title }}</h2><p>{{ t.cta_desc }}</p><a class="btn" href="{{ url_for('contact') }}">{{ t.start_now }}</a></section>
 {% endblock %}

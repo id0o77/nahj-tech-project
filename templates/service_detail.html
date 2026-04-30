@@ -1,16 +1,3 @@
 {% extends "base.html" %}
 {% block title %}{{ service.name }}{% endblock %}
-{% block content %}
-<section class="section detail-grid top-space">
-  <div class="glass-card detail-box reveal show">
-    <span class="badge">{{ service.icon }} {{ t.services }}</span>
-    <h1>{{ service.name }}</h1>
-    <p>{{ service.description }}</p>
-    <p><strong>{{ t.price }}:</strong> {{ service.price }}</p>
-    <div class="hero-actions">
-      <a class="btn" href="{{ url_for('request_service', service_id=service.id) }}">{{ t.request_service }} 🚀</a>
-      <a class="btn ghost" href="{{ url_for('services') }}">{{ t.back_to_services }}</a>
-    </div>
-  </div>
-</section>
-{% endblock %}
+{% block content %}<section class="section detail-grid top-space"><div class="glass-card detail-box"><span class="badge">{{ service.icon }} {{ t.services }}</span><h1>{{ service.name }}</h1><p>{{ service.description }}</p><p><strong>{{ t.price }}:</strong> {{ service.price }}</p><p><strong>{{ t.status }}:</strong> {{ service.status }}</p><a class="btn" href="{{ url_for('contact') }}">{{ t.start_now }}</a></div></section>{% endblock %}

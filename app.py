@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -27,8 +28,7 @@ TRANSLATIONS = {
         'values_title':'من نحن','values_desc':'نحوّل الأفكار إلى منتجات رقمية واضحة وآمنة وقابلة للتوسع.','cta_title':'جاهز تبدأ مشروعك؟','cta_desc':'راسلنا الآن وسنساعدك في تحويل فكرتك إلى موقع أو تطبيق عملي.',
         'contact_title':'تواصل معنا','contact_desc':'ارسل لنا تفاصيل مشروعك وسنرد عليك في أقرب وقت.','full_name':'الاسم الكامل','company':'الشركة (اختياري)','email':'البريد الإلكتروني','message':'الرسالة','send':'إرسال الرسالة',
         'admin_area':'إدارة الموقع','add_service':'إضافة خدمة','edit':'تعديل','delete':'حذف','service_name':'اسم الخدمة','description':'الوصف','price':'السعر','status':'الحالة','icon':'الأيقونة','save':'حفظ','messages':'رسائل العملاء','current_user':'المستخدم الحالي',
-        'username':'اسم المستخدم','password':'كلمة المرور','login_title':'تسجيل الدخول','default_account':'الحساب الافتراضي: admin / admin123','footer':'نحوّل الأفكار إلى مواقع وتطبيقات آمنة وجذابة.',
-        'feedback':'اقتراحات وآراء العملاء','feedback_title':'شاركنا اقتراحك أو تقييمك','feedback_desc':'رأيك يساعدنا نطور الخدمة ونفهم هل التجربة كانت مرضية.','customer_name':'اسم العميل','service_used':'الخدمة المستخدمة','rating':'التقييم','satisfaction':'مدى الرضا','suggestion':'الاقتراح أو الرأي','submit_feedback':'إرسال الرأي','reviews':'آراء العملاء','satisfied':'مرضي','neutral':'متوسط','not_satisfied':'غير مرضي','public_review':'إظهار الرأي في الموقع','testimonial_title':'ماذا قال العملاء؟','suggestions':'اقتراحات العملاء','request_service':'طلب الخدمة','service_request':'طلب خدمة','request_details':'تفاصيل الطلب','phone':'رقم الجوال','submit_request':'إرسال الطلب','customer_requests':'طلبات العملاء','requested_service':'الخدمة المطلوبة','request_success':'تم إرسال طلبك بنجاح، سنتواصل معك قريباً.','choose_service':'اختر خدمة','back_to_services':'العودة للخدمات'
+        'username':'اسم المستخدم','password':'كلمة المرور','login_title':'تسجيل الدخول','default_account':'الحساب الافتراضي: admin / admin123','footer':'نحوّل الأفكار إلى مواقع وتطبيقات آمنة وجذابة.'
     },
     'en': {
         'brand':'Najh Tech','home':'Home','services':'Services','about':'About','contact':'Contact','login':'Login','logout':'Logout','dashboard':'Dashboard',
@@ -37,8 +37,7 @@ TRANSLATIONS = {
         'values_title':'About Us','values_desc':'We turn ideas into clear, secure, and scalable digital products.','cta_title':'Ready to start your project?','cta_desc':'Contact us and we will help turn your idea into a working website or app.',
         'contact_title':'Contact Us','contact_desc':'Send your project details and we will get back to you soon.','full_name':'Full Name','company':'Company (optional)','email':'Email Address','message':'Message','send':'Send Message',
         'admin_area':'Website Management','add_service':'Add Service','edit':'Edit','delete':'Delete','service_name':'Service Name','description':'Description','price':'Price','status':'Status','icon':'Icon','save':'Save','messages':'Customer Messages','current_user':'Current User',
-        'username':'Username','password':'Password','login_title':'Login','default_account':'Default account: admin / admin123','footer':'We turn ideas into secure and attractive websites and applications.',
-        'feedback':'Customer Feedback','feedback_title':'Share your suggestion or review','feedback_desc':'Your opinion helps us improve the service and understand customer satisfaction.','customer_name':'Customer Name','service_used':'Service Used','rating':'Rating','satisfaction':'Satisfaction','suggestion':'Suggestion or Review','submit_feedback':'Submit Feedback','reviews':'Customer Reviews','satisfied':'Satisfied','neutral':'Neutral','not_satisfied':'Not Satisfied','public_review':'Show review on website','testimonial_title':'What customers said','suggestions':'Customer Suggestions','request_service':'Request Service','service_request':'Service Request','request_details':'Request Details','phone':'Phone Number','submit_request':'Submit Request','customer_requests':'Customer Requests','requested_service':'Requested Service','request_success':'Your request was sent successfully. We will contact you soon.','choose_service':'Choose Service','back_to_services':'Back to Services'
+        'username':'Username','password':'Password','login_title':'Login','default_account':'Default account: admin / admin123','footer':'We turn ideas into secure and attractive websites and applications.'
     }
 }
 
@@ -85,8 +84,6 @@ def init_db():
     conn.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, role TEXT NOT NULL DEFAULT "admin", created_at TEXT NOT NULL)')
     conn.execute('CREATE TABLE IF NOT EXISTS services (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, price TEXT, status TEXT NOT NULL DEFAULT "active", icon TEXT, created_at TEXT NOT NULL)')
     conn.execute('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, company TEXT, email TEXT NOT NULL, message TEXT NOT NULL, ip TEXT, created_at TEXT NOT NULL)')
-    conn.execute('CREATE TABLE IF NOT EXISTS service_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, service_id INTEGER, service_name TEXT NOT NULL, name TEXT NOT NULL, email TEXT NOT NULL, phone TEXT, message TEXT, ip TEXT, created_at TEXT NOT NULL)')
-    conn.execute('CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, email TEXT, service_used TEXT, rating INTEGER NOT NULL DEFAULT 5, satisfaction TEXT NOT NULL DEFAULT "satisfied", suggestion TEXT NOT NULL, is_public INTEGER NOT NULL DEFAULT 1, ip TEXT, created_at TEXT NOT NULL)')
     if conn.execute('SELECT COUNT(*) FROM users').fetchone()[0] == 0:
         conn.execute('INSERT INTO users (username,password_hash,role,created_at) VALUES (?,?,?,?)', ('admin', generate_password_hash('admin123'), 'admin', now()))
     if conn.execute('SELECT COUNT(*) FROM services').fetchone()[0] == 0:
@@ -148,8 +145,7 @@ def set_lang(code):
 @app.route('/')
 def index():
     services = db().execute("SELECT * FROM services WHERE status='active' ORDER BY id").fetchall()
-    reviews = db().execute("SELECT * FROM feedback WHERE is_public=1 ORDER BY id DESC LIMIT 6").fetchall()
-    return render_template('index.html', services=services, values=VALUES, reviews=reviews)
+    return render_template('index.html', services=services, values=VALUES)
 
 @app.route('/services')
 def services():
@@ -162,36 +158,6 @@ def service_detail(service_id):
     if not service:
         return render_template('404.html'), 404
     return render_template('service_detail.html', service=service)
-
-@app.route('/request-service/<int:service_id>', methods=['GET','POST'])
-def request_service(service_id):
-    service = db().execute('SELECT * FROM services WHERE id=? AND status="active"', (service_id,)).fetchone()
-    if not service:
-        return render_template('404.html'), 404
-    if request.method == 'POST':
-        if rate_limited(CONTACT_ATTEMPTS, 'req-' + client_ip(), 6, 600):
-            flash('تم تجاوز عدد المحاولات. حاول لاحقاً.', 'error')
-            return redirect(url_for('request_service', service_id=service_id))
-        name = request.form.get('name','').strip()[:80]
-        email = request.form.get('email','').strip()[:120]
-        phone = request.form.get('phone','').strip()[:40]
-        message = request.form.get('message','').strip()[:2000]
-        if not name or not valid_email(email) or len(message) < 5:
-            flash('تأكد من الاسم والبريد وتفاصيل الطلب.', 'error')
-            return redirect(url_for('request_service', service_id=service_id))
-        db().execute('INSERT INTO service_requests (service_id,service_name,name,email,phone,message,ip,created_at) VALUES (?,?,?,?,?,?,?,?)', (service['id'], service['name'], name, email, phone, message, client_ip(), now()))
-        db().commit()
-        flash(TRANSLATIONS[current_lang()]['request_success'], 'success')
-        return redirect(url_for('service_detail', service_id=service_id))
-    return render_template('request_service.html', service=service)
-
-@app.route('/delete-request/<int:request_id>', methods=['POST'])
-@login_required
-def delete_request(request_id):
-    db().execute('DELETE FROM service_requests WHERE id=?', (request_id,))
-    db().commit()
-    flash('تم حذف الطلب', 'success')
-    return redirect(url_for('dashboard'))
 
 @app.route('/contact', methods=['GET','POST'])
 def contact():
@@ -211,38 +177,6 @@ def contact():
         flash('تم إرسال رسالتك بنجاح، سنتواصل معك قريباً.', 'success')
         return redirect(url_for('contact'))
     return render_template('contact.html')
-
-@app.route('/feedback', methods=['GET','POST'])
-def feedback():
-    services = db().execute("SELECT * FROM services WHERE status='active' ORDER BY id").fetchall()
-    if request.method == 'POST':
-        if rate_limited(CONTACT_ATTEMPTS, 'fb-' + client_ip(), 6, 600):
-            flash('تم تجاوز عدد المحاولات. حاول لاحقاً.', 'error')
-            return redirect(url_for('feedback'))
-        name = request.form.get('name','').strip()[:80]
-        email = request.form.get('email','').strip()[:120]
-        service_used = request.form.get('service_used','').strip()[:120]
-        suggestion = request.form.get('suggestion','').strip()[:2000]
-        satisfaction = request.form.get('satisfaction','satisfied')
-        if satisfaction not in ['satisfied','neutral','not_satisfied']:
-            satisfaction = 'satisfied'
-        try:
-            rating = int(request.form.get('rating', 5))
-        except ValueError:
-            rating = 5
-        rating = max(1, min(5, rating))
-        is_public = 1 if request.form.get('is_public') == 'on' else 0
-        if not name or len(suggestion) < 5:
-            flash('اكتب الاسم والرأي أو الاقتراح.', 'error')
-            return redirect(url_for('feedback'))
-        if email and not valid_email(email):
-            flash('تأكد من البريد الإلكتروني.', 'error')
-            return redirect(url_for('feedback'))
-        db().execute('INSERT INTO feedback (name,email,service_used,rating,satisfaction,suggestion,is_public,ip,created_at) VALUES (?,?,?,?,?,?,?,?,?)', (name,email,service_used,rating,satisfaction,suggestion,is_public,client_ip(),now()))
-        db().commit()
-        flash('شكراً لك، تم حفظ رأيك بنجاح.', 'success')
-        return redirect(url_for('feedback'))
-    return render_template('feedback.html', services=services)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -271,9 +205,7 @@ def logout():
 def dashboard():
     services = db().execute('SELECT * FROM services ORDER BY id').fetchall()
     messages = db().execute('SELECT * FROM messages ORDER BY id DESC').fetchall()
-    feedbacks = db().execute('SELECT * FROM feedback ORDER BY id DESC').fetchall()
-    requests = db().execute('SELECT * FROM service_requests ORDER BY id DESC').fetchall()
-    return render_template('dashboard.html', services=services, messages=messages, feedbacks=feedbacks, requests=requests)
+    return render_template('dashboard.html', services=services, messages=messages)
 
 @app.route('/add-service', methods=['GET','POST'])
 @login_required
@@ -316,14 +248,6 @@ def delete_service(service_id):
     flash('تم حذف الخدمة', 'success')
     return redirect(url_for('dashboard'))
 
-@app.route('/delete-feedback/<int:feedback_id>', methods=['POST'])
-@login_required
-def delete_feedback(feedback_id):
-    db().execute('DELETE FROM feedback WHERE id=?', (feedback_id,))
-    db().commit()
-    flash('تم حذف الرأي', 'success')
-    return redirect(url_for('dashboard'))
-
 @app.errorhandler(404)
 def nf(e):
     return render_template('404.html'), 404
@@ -334,4 +258,4 @@ def se(e):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)

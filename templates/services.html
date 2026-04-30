@@ -1,24 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{{ t.services }} - {{ t.brand }}{% endblock %}
 {% block content %}
-<section class="section top-space">
-  <div class="section-title">
-    <span>{{ t.services }}</span>
-    <h1>{{ t.our_services }}</h1>
-    <p>{{ t.services_desc }}</p>
-  </div>
-  <div class="service-grid">
-    {% for service in services %}
-    <div class="service-wrap reveal">
-      <a class="glass-card service-tile service-card-link" href="{{ url_for('service_detail', service_id=service.id) }}">
-        <div class="tile-icon">{{ service.icon }}</div>
-        <h3>{{ service.name }}</h3>
-        <p>{{ service.description }}</p>
-        <span class="inline-link">{{ t.details }} ←</span>
-      </a>
-      <a class="btn request-card-btn" href="{{ url_for('request_service', service_id=service.id) }}">{{ t.request_service }} 🚀</a>
-    </div>
-    {% endfor %}
-  </div>
-</section>
+<section class="section top-space"><div class="section-title"><span>{{ t.services }}</span><h1>{{ t.our_services }}</h1><p>{{ t.services_desc }}</p></div><div class="service-grid">{% for service in services %}<article class="glass-card service-tile"><div class="tile-icon">{{ service.icon }}</div><h3>{{ service.name }}</h3><p>{{ service.description }}</p><a href="{{ url_for('service_detail', service_id=service.id) }}">{{ t.details }} ←</a></article>{% endfor %}</div></section>
 {% endblock %}

@@ -13,13 +13,11 @@
     <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo">
     <strong>{{ t.brand }}</strong>
   </a>
-  <button class="menu-toggle" type="button" aria-label="Menu">☰</button>
   <nav>
     <a href="{{ url_for('index') }}">{{ t.home }}</a>
     <a href="{{ url_for('services') }}">{{ t.services }}</a>
     <a href="{{ url_for('index') }}#about">{{ t.about }}</a>
     <a href="{{ url_for('contact') }}">{{ t.contact }}</a>
-    <a href="{{ url_for('feedback') }}">{{ t.feedback }}</a>
     <a class="lang" href="{{ url_for('set_lang', code='ar') }}">عربي</a>
     <a class="lang" href="{{ url_for('set_lang', code='en') }}">English</a>
     {% if session.get('user') %}
