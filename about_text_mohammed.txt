@@ -1,0 +1,12 @@
+أنا محمد، مطور مهتم بتطوير مواقع وتطبيقات الويب باستخدام تقنيات حديثة مثل Flask و JavaScript.
+
+اشتغلت على هذا المشروع بهدف تطبيق المهارات اللي تعلمتها وبناء نظام بسيط لإدارة خدمات شركة تقنية، بحيث يتيح إضافة الخدمات، طلبها، وتقييمها بطريقة سهلة وواضحة.
+
+أحب أطور نفسي بشكل مستمر وأتعلم أشياء جديدة في مجال البرمجة، وهذا المشروع يعتبر خطوة مهمة بالنسبة لي في هذا المجال.
+
+--- English ---
+I'm Mohammed, a developer interested in building modern web applications using technologies like Flask and JavaScript.
+
+I worked on this project to apply what I learned and build a simple system for managing technology company services, including adding services, requesting them, and collecting customer feedback.
+
+I’m always trying to improve my skills and learn more about web development, and this project is an important step for me in that journey.

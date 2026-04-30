@@ -16,7 +16,7 @@
   </div>
 </section>
 <section id="about" class="section values-section">
-  <div class="section-title"><span>{{ t.about }}</span><h2>{{ t.values_title }}</h2><p>{{ t.values_desc }}</p></div>
+  <div class="section-title"><span>{{ t.about }}</span><h2>{{ t.values_title }}</h2><p>أنا محمد، مطور مهتم بتطوير مواقع وتطبيقات الويب باستخدام تقنيات حديثة مثل Flask و JavaScript.<br><br>اشتغلت على هذا المشروع بهدف تطبيق المهارات اللي تعلمتها وبناء نظام بسيط لإدارة خدمات شركة تقنية، بحيث يتيح إضافة الخدمات، طلبها، وتقييمها بطريقة سهلة وواضحة.<br><br>أحب أطور نفسي بشكل مستمر وأتعلم أشياء جديدة في مجال البرمجة، وهذا المشروع يعتبر خطوة مهمة بالنسبة لي في هذا المجال.</p></div>
   <div class="values-grid">{% for title, text, icon in values %}<div class="value-card"><div class="value-icon">{{ icon }}</div><h3>{{ title }}</h3><p>{{ text }}</p></div>{% endfor %}</div>
 </section>
 <section class="section cta"><span class="badge">{{ t.contact }}</span><h2>{{ t.cta_title }}</h2><p>{{ t.cta_desc }}</p><a class="btn" href="{{ url_for('contact') }}">{{ t.start_now }}</a></section>
